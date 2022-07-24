@@ -3,7 +3,7 @@ use std::{time::Instant, net::TcpStream};
 use std::io::Read;
 
 #[tauri::command]
-pub fn ping(server: String) -> Result<String, String> {
+pub async fn ping(server: String) -> Result<String, String> {
     let start = Instant::now();
     println!("Pinging {}", &server);
     let mut tcp = match TcpStream::connect(&server) {

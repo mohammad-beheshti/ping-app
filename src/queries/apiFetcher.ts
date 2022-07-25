@@ -50,7 +50,13 @@ export async function apiFetch<
   if (!response.ok) {
     let error: ErrorWrapper<TError>;
     try {
-      error = response.data as ErrorWrapper<TError>;
+      //@ts-expect-error wrong type by the generated code
+      error = {
+        status:
+          (response.data as TError & {statusCode: number})?.statusCode ||
+          "unknown",
+        payload: response.data,
+      };
     } catch (e) {
       error = {
         status: "unknown" as const,

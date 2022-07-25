@@ -22,11 +22,6 @@ export default function Login() {
       navigate("/");
     },
   });
-  useEffect(() => {
-    if (error) {
-      console.error(error);
-    }
-  }, [error]);
 
   const onSubmit = handleSubmit((formData) => mutate({body: formData}));
   return (

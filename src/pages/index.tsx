@@ -8,13 +8,24 @@ const Home = () => {
   const {
     data: servers,
     isLoading,
-    error,
-  } = useServersControllerFindAll({
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
+    error: serversFetchError,
+  } = useServersControllerFindAll(
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     },
-  });
+    {
+      retry: false,
+      onError: (error) => {
+        if (error.status === 401) {
+          navigate("/login");
+        }
+      },
+    },
+  );
   const [isPinging, setIsPinging] = useState(false);
+  const [pingError, setPingError] = useState<unknown>();
   const pingAllServers = async () => {
     setIsPinging(true);
     if (!servers) {
@@ -25,7 +36,7 @@ const Home = () => {
         await pingServer(server.ip + ":" + server.port, server.waitInMs);
       }
     } catch (e) {
-      console.error(e);
+      setPingError(e);
     }
     setIsPinging(false);
   };
@@ -34,10 +45,12 @@ const Home = () => {
     navigate("/login");
   }
 
-  if (error) {
+  if (serversFetchError || pingError) {
     return (
       <div className="flex justify-center items-center h-screen w-screen bg-red-500 font-bold text-white text-3xl">
-        Encountered an error while fetching servers
+        {`Encountered an error while ${
+          serversFetchError && "fetching servers"
+        }${pingError && "pinging servers"}`}
       </div>
     );
   }

@@ -17,6 +17,12 @@ export default function Login() {
 
   const {error, mutate, isLoading} = useAuthControllerLogin({
     onSuccess: ({access_token}) => {
+      //parse access_token and if it isn't admin set token in local storage
+      const token = access_token.split(".")[1];
+      const decodedToken: {role: string[]} = JSON.parse(window.atob(token));
+      if (decodedToken.role.includes("ADMIN")) {
+        throw new Error("You are not authorized to login");
+      }
       localStorage.setItem("accessToken", access_token);
       navigate("/");
     },

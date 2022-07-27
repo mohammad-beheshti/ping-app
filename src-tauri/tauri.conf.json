@@ -8,16 +8,10 @@
   },
   "package": {
     "productName": "ping-app",
-    "version": "0.1.0"
+    "version": "1.0.0"
   },
   "tauri": {
-    "allowlist": {
-      "http": {
-        "all": true,
-        "request": true,
-        "scope": ["https://pa.goldsrc.dev/*"]
-      }
-    },
+    "allowlist": {},
     "bundle": {
       "active": true,
       "category": "DeveloperTool",
@@ -62,6 +56,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
+        "fileDropEnabled": false,
         "title": "Ping",
         "width": 800
       }

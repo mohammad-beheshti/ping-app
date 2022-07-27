@@ -6,10 +6,10 @@ import * as Yup from "yup";
 import {pingServer} from "./rust-calls/ping";
 
 interface IPing {
-  sequence: string;
+  sequence: number;
   ip: string;
-  port: string;
-  waitInMs: string;
+  port: number;
+  waitInMs: number;
 }
 
 function DropCsv(
@@ -88,6 +88,7 @@ export default function App() {
     } catch (e) {
       if (e instanceof Error) {
         setError(e);
+        return;
       }
       setError(new Error("Error while parsing CSV"));
     }
@@ -166,21 +167,27 @@ function parseCSV(file: File): Promise<IPing[]> {
       const csv = reader.result;
       const lines = (csv as string).split("\n");
       const headers = lines[0].split(",");
-      const data = lines.slice(1).map((line) => {
-        const obj = {} as Record<string, string>;
-        const currentLine = line.split(",");
-        headers.forEach((header, index) => {
-          obj[header] = currentLine[index];
+      const data = lines
+        .slice(1)
+        .filter(Boolean)
+        .map((line) => {
+          const obj = {} as Record<string, string>;
+          const currentLine = line.split(",");
+          headers.forEach((header, index) => {
+            obj[header] = currentLine[index]?.trim();
+          });
+          return obj;
         });
-        return obj;
-      });
-      if (validationSchema.isValidSync(data)) {
-        resolve(data as unknown as IPing[]);
+      try {
+        validationSchema.validateSync(data);
+      } catch (e) {
+        return reject(e);
       }
-      reject(new Error("Invalid CSV"));
+      const castedData = validationSchema.cast(data)! as IPing[];
+      return resolve(castedData);
     };
     reader.onerror = (error) => {
-      reject(error);
+      return reject(error);
     };
   });
 }

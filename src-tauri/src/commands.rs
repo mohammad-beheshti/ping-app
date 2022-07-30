@@ -1,5 +1,4 @@
-
-use std::{time::Instant, net::TcpStream};
+use std::{net::TcpStream, time::Instant};
 use std::io::Read;
 
 #[tauri::command]

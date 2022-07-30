@@ -1,7 +1,8 @@
-import {invoke} from "@tauri-apps/api";
-import sleep from "./sleep";
+import { invoke } from '@tauri-apps/api';
+import sleep from './sleep';
 
 export const pingServer = async (server: string, ttl?: number) => {
-  await invoke("ping", {server});
+  const result = Number(await invoke('ping', { server }));
   ttl && (await sleep(ttl));
+  return result;
 };

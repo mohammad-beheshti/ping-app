@@ -45,10 +45,11 @@ function ActionCol({
   return (
     <>
       <td>
-        <Tooltip closeDelay={500} label={error?.message || (isPinging && 'Pinging') || 'Ping'}>
+        <Tooltip color={error ? 'red' : 'blue'} closeDelay={500}
+                 label={error?.message || (isPinging && 'Pinging') || 'Ping'}>
           <Button
             type='button'
-            color='yellow'
+            color={error ? 'red' : 'primary'}
             onClick={onPing}
             disabled={isPinging}
           >
@@ -102,9 +103,9 @@ export function PingTable({ data }: { data: IPing[] }) {
       <Table>
         <thead>
         <tr>
-          <th>sequence</th>
-          <th>ip</th>
-          <th>port</th>
+          <th>Sequence</th>
+          <th>IP</th>
+          <th>Port</th>
           <th>Wait in Ms</th>
           <th>Action</th>
           <th>Result</th>

@@ -1,5 +1,5 @@
 import { Button, Center, Space, Text } from '@mantine/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DropCsv } from './components/DropCsv';
 import { useLocalStorage } from '@mantine/hooks';
 import IPing from './types/IPing';
@@ -14,6 +14,10 @@ export default function App() {
     },
   );
   const [error, setError] = useState<Error | null>(null);
+  useEffect(() => {
+    document.addEventListener('contextmenu', event => event.preventDefault());
+  }, []);
+
   const onDrop = async (files: File[]) => {
     try {
       setError(null);
@@ -49,7 +53,7 @@ export default function App() {
     <Center style={{ flexDirection: 'column', height: '100%', padding: '2rem' }}>
       <PingTable data={data} />
       <Space my='sm' />
-      <Button onClick={onClear}>Clear</Button>
+      <Button variant='outline' onClick={onClear}>Clear</Button>
     </Center>
   );
 }
